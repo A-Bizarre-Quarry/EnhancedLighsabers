@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.example.examplemod.ExampleMod"
+          "de.abq.enhanced_lightsabers.ExampleMod"
         ]
     },
     "mixins": [
