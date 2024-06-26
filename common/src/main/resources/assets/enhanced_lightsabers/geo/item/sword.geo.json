@@ -58,21 +58,27 @@
 					"pivot": [0, 0, 0]
 				},
 				{
-					"name": "bone",
+					"name": "primary",
 					"parent": "joint_blade",
 					"pivot": [0, 7, 0]
 				},
 				{
-					"name": "bone3",
+					"name": "secondary",
 					"parent": "joint_blade",
 					"pivot": [3, 6, 0],
-					"rotation": [0, 0, -45]
+					"rotation": [0, 0, -90]
 				},
 				{
-					"name": "bone2",
+					"name": "secondary2",
 					"parent": "joint_blade",
 					"pivot": [-3, 6, 0],
-					"rotation": [0, 0, 45]
+					"rotation": [0, 0, 90]
+				},
+				{
+					"name": "tertiary",
+					"parent": "joint_blade",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 0, -180]
 				}
 			]
 		}

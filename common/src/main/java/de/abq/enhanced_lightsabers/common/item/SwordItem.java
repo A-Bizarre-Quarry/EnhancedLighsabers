@@ -1,7 +1,6 @@
 package de.abq.enhanced_lightsabers.common.item;
 
-import de.abq.enhanced_lightsabers.Constants;
-import de.abq.enhanced_lightsabers.client.renderer.TestLightsaberRenderer;
+import de.abq.enhanced_lightsabers.client.renderer.SwordRenderer;
 import de.abq.enhanced_lightsabers.common.data_components.ELDataComponents;
 import de.abq.enhanced_lightsabers.common.data_components.PartsComponents;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -22,13 +21,13 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Consumer;
 
-public class TestLightsaberItem extends Item implements GeoItem {
+public class SwordItem extends Item implements GeoItem {
     private static final RawAnimation ACTIVATE_ANIM = RawAnimation.begin().thenPlay("use.activate");
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public float bladeLength;
 
-    public TestLightsaberItem(Properties properties) {
+    public SwordItem(Properties properties) {
         super(properties);
         // Register our item as server-side handled.
         // This enables both animation data syncing and server-side animation triggering
@@ -39,12 +38,12 @@ public class TestLightsaberItem extends Item implements GeoItem {
     @Override
     public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
         consumer.accept(new GeoRenderProvider() {
-            private TestLightsaberRenderer renderer;
+            private SwordRenderer renderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
                 if (this.renderer == null)
-                    this.renderer = new TestLightsaberRenderer();
+                    this.renderer = new SwordRenderer();
 
                 return this.renderer;
             }
