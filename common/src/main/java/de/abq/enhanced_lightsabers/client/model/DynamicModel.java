@@ -12,9 +12,8 @@ public class DynamicModel<T extends GeoAnimatable> extends GeoModel<T> {
 
     @Override
     public ResourceLocation getModelResource(T t) {
-        var a = resourceLocation.withPath("geo/item/" + resourceLocation.getPath() + ".geo.json");
-        System.out.println(a);
-        return a;
+
+        return resourceLocation.withPath("geo/item/" + resourceLocation.getPath() + ".geo.json");
     }
 
     @Override
@@ -29,10 +28,6 @@ public class DynamicModel<T extends GeoAnimatable> extends GeoModel<T> {
 
     public void setResourceLocation(ResourceLocation resourceLocation) {
         this.resourceLocation = resourceLocation;
-    }
-
-    public ResourceLocation getAdvancedResourceLocation(){
-        return ResourceLocation.fromNamespaceAndPath(resourceLocation.getNamespace(), "geo/item/"+resourceLocation.getPath()+".geo.json");
     }
 
     public ResourceLocation getBasicResourceLocation(){

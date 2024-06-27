@@ -74,6 +74,7 @@ public class BladeRenderLayer extends GeoRenderLayer<SwordItem>{
         float outer_blade_thickness = inner_blade_thickness * 3.5f , outer_blade_length = inner_blade_length * 3.5f;
 
         //Outer Blade
+        //TODO: find out what blur is in renderType. Maybe I have to create my own renderType?
         VertexConsumer outerBuffer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/misc/lightsaber_blade_glow.png")));
         // Front face
         outerBuffer.addVertex(matrix, -outer_blade_thickness, (bladeHeight + 0.01f), outer_blade_length).setColor(outerColor).setUv(u + 0.5f, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);

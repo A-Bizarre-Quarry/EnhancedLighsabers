@@ -9,11 +9,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 public record ModelPart(ResourceLocation model, float scale){
-    public static final ModelPart DEFAULT = new ModelPart(Util.EMPTY_RESOURCE_LOCATION, 0);
+    public static final ModelPart DEFAULT = new ModelPart(Util.EMPTY_RESOURCE_LOCATION, 1.0f);
 
     public static Codec<ModelPart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                     ResourceLocation.CODEC.fieldOf("model").forGetter(ModelPart::model),
-                    Codec.FLOAT.fieldOf("scale").forGetter(ModelPart::scale)
+                    Codec.FLOAT.optionalFieldOf("scale", 1f).forGetter(ModelPart::scale)
             ).apply(instance, ModelPart::new)
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, ModelPart> STREAM_CODEC = StreamCodec.composite(

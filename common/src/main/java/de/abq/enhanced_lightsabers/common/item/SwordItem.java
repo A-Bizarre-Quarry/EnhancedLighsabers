@@ -44,7 +44,6 @@ public class SwordItem extends Item implements GeoItem {
             public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
                 if (this.renderer == null)
                     this.renderer = new SwordRenderer();
-
                 return this.renderer;
             }
         });

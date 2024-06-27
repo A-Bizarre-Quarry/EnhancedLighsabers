@@ -3,82 +3,33 @@
 	"minecraft:geometry": [
 		{
 			"description": {
-				"identifier": "geometry.test_blade",
-				"texture_width": 32,
-				"texture_height": 32,
+				"identifier": "geometry.sword",
+				"texture_width": 16,
+				"texture_height": 16,
 				"visible_bounds_width": 2,
 				"visible_bounds_height": 1.5,
-				"visible_bounds_offset": [0, 0.25, 0]
+				"visible_bounds_offset": [1, 1, 1]
 			},
 			"bones": [
 				{
-					"name": "bb_main",
+					"name": "root",
 					"pivot": [0, 0, 0],
-					"cubes": [
-						{
-							"origin": [-1, 0, -1],
-							"size": [2, 7, 2],
-							"uv": {
-								"north": {"uv": [0, 0], "uv_size": [2, 7]},
-								"east": {"uv": [0, 0], "uv_size": [2, 7]},
-								"south": {"uv": [0, 0], "uv_size": [2, 7]},
-								"west": {"uv": [0, 0], "uv_size": [2, 7]},
-								"up": {"uv": [2, 2], "uv_size": [-2, -2]},
-								"down": {"uv": [2, 2], "uv_size": [-2, -2]}
-							}
-						},
-						{
-							"origin": [-3, 5.25, -1],
-							"size": [2, 1.75, 2],
-							"uv": {
-								"north": {"uv": [0, 0], "uv_size": [2, 1.75]},
-								"east": {"uv": [0, 0], "uv_size": [2, 1.75]},
-								"south": {"uv": [0, 0], "uv_size": [2, 1.75]},
-								"west": {"uv": [0, 0], "uv_size": [2, 1.75]},
-								"up": {"uv": [2, 2], "uv_size": [-2, -2]},
-								"down": {"uv": [2, 2], "uv_size": [-2, -2]}
-							}
-						},
-						{
-							"origin": [1, 5.25, -1],
-							"size": [2, 1.75, 2],
-							"uv": {
-								"north": {"uv": [0, 0], "uv_size": [2, 1.75]},
-								"east": {"uv": [0, 0], "uv_size": [2, 1.75]},
-								"south": {"uv": [0, 0], "uv_size": [2, 1.75]},
-								"west": {"uv": [0, 0], "uv_size": [2, 1.75]},
-								"up": {"uv": [2, 2], "uv_size": [-2, -2]},
-								"down": {"uv": [2, 2], "uv_size": [-2, -2]}
-							}
-						}
-					]
+					"rotation": [0, 0, 0]
 				},
 				{
-					"name": "joint_blade",
-					"pivot": [0, 0, 0]
-				},
-				{
-					"name": "primary",
-					"parent": "joint_blade",
-					"pivot": [0, 7, 0]
-				},
-				{
-					"name": "secondary",
-					"parent": "joint_blade",
-					"pivot": [3, 6, 0],
-					"rotation": [0, 0, -90]
-				},
-				{
-					"name": "secondary2",
-					"parent": "joint_blade",
-					"pivot": [-3, 6, 0],
-					"rotation": [0, 0, 90]
-				},
-				{
-					"name": "tertiary",
-					"parent": "joint_blade",
+					"name": "joint_emitter",
 					"pivot": [0, 0, 0],
-					"rotation": [0, 0, -180]
+					"rotation": [0, 0, 0]
+				},
+				{
+					"name": "joint_guard",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 0, 0]
+				},
+				{
+					"name": "joint_pommel",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 0, 0]
 				}
 			]
 		}
