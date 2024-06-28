@@ -2,6 +2,18 @@
   "credit": "Made with Blockbench",
   "parent": "builtin/entity",
   "display": {
+    "gui": {
+      "rotation": [
+        -77,
+        -41,
+        -78
+      ],
+      "translation": [
+        -3,
+        -3,
+        0
+      ]
+    },
     "thirdperson_righthand": {
       "translation": [
         0,

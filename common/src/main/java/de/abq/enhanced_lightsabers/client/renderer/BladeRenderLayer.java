@@ -13,44 +13,46 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.*;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.*;
 
-public class BladeRenderLayer extends GeoRenderLayer<SwordItem>{
-
+public class BladeRenderLayer extends ModelRenderLayer<SwordItem>{
     private BladesPart blades = null;
+    private List<GeoBone> bones = new ArrayList<>();
+    private Vector3f emitterLocation;
+    private boolean shouldRender;
 
+    private boolean isBladeCracked = false;
+    private boolean isBladeFineCut = false;
 
     public BladeRenderLayer(SwordRenderer entityRendererIn) {
         super(entityRendererIn);
+        this.emitterLocation = new Vector3f();
     }
 
     @Override
     public void renderForBone(PoseStack poseStack, SwordItem animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        if (bone.getName().equals("joint_blade")) {
-            for (GeoBone blade_joint : bone.getChildBones()) {
-                Optional<BladesPart.Blade> bladeDataOpt = blades.getByString(blade_joint.getName());
-                if (bladeDataOpt.isEmpty()) continue;
-                BladesPart.Blade bladeData = bladeDataOpt.get();
+        if (!shouldRender) return;
+        for (GeoBone blade_joint : this.bones ){
+            Optional<BladesPart.Blade> bladeDataOpt = blades.getByString(blade_joint.getName());
+            if (bladeDataOpt.isEmpty()) continue;
+            BladesPart.Blade bladeData = bladeDataOpt.get();
+            isBladeFineCut = bladeData.fine_cut();
+            isBladeCracked = bladeData.cracked();
 
-                if (bladeData.model().getPath().isBlank() || bladeData.model().getNamespace().isBlank()){
-                    Tuple<MultiBufferSource, PoseStack> blade = renderLightsaberBlade(bufferSource, poseStack, blade_joint, bladeData.length() * 2, Util.HexStringToIntARGB(bladeData.outerColor(), 0x66), Util.HexStringToIntARGB(bladeData.innerColor(), 0xff));
-                    bufferSource = blade.getA();
-                    poseStack = blade.getB();
-                } else {
-                    renderModel(animatable, bladeData.model());
-                }
+            if (bladeData.model().getPath().isBlank() || bladeData.model().getNamespace().isBlank()){
+                Tuple<MultiBufferSource, PoseStack> blade = renderLightsaberBlade(bufferSource, poseStack, blade_joint, bladeData.length() * 2, Util.HexStringToIntARGB(bladeData.outerColor(), 0x66), Util.HexStringToIntARGB(bladeData.innerColor(), 0xff));
+                bufferSource = blade.getA();
+                poseStack = blade.getB();
+            } else {
+                setModel(bladeData.model());
+                super.renderModel(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
             }
-
         }
-        super.renderForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, 15728640, OverlayTexture.NO_OVERLAY);
-    }
-
-    private void renderModel(SwordItem animatable, ResourceLocation model){
+        setBones(new ArrayList<>());
+        super.renderForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
     }
 
     private Tuple<MultiBufferSource, PoseStack> renderLightsaberBlade(MultiBufferSource bufferSource, PoseStack poseStack, GeoBone blade_joint, float completeBladeLength, int outerColor, int innerColor){
@@ -58,20 +60,28 @@ public class BladeRenderLayer extends GeoRenderLayer<SwordItem>{
 
         poseStack.scale(0.05f, 0.05f, 0.05f);  // Scale down
         poseStack.rotateAround(new Quaternionf().rotationXYZ(-blade_joint.getRotX(), -blade_joint.getRotY(), -blade_joint.getRotZ()), blade_joint.getPivotX(), blade_joint.getPivotY(), blade_joint.getPivotZ());
-        poseStack.translate((blade_joint.getPivotX() * 1.3125), (blade_joint.getPivotY() * 1.3125)-0.05, (blade_joint.getPivotZ() * 1.3125)); // Position it at the cube's location
-
+        poseStack.translate(
+                this.emitterLocation.x+(blade_joint.getPivotX()),
+                this.emitterLocation.y+(blade_joint.getPivotY()),
+                this.emitterLocation.z+(blade_joint.getPivotZ())
+        );
         Matrix4f matrix = poseStack.last().pose();
 
-        // Define the color and texture coordinates
-        //this.outerColor = 0x884444ff;
-        //this.innerColor = 0xffffffff;
-        int maxLight = 0xF000F0; //Geckolib uses 15728640
+        int maxLight = 0xF000F0;
         float u = 0.0f, v = 0.0f;
-        float tip_length = 0.73f;
-        float bladeHeight = completeBladeLength - tip_length;
 
+        float tip_length = 0.73f;
         float inner_blade_thickness = .25f, inner_blade_length = .25f;
-        float outer_blade_thickness = inner_blade_thickness * 3.5f , outer_blade_length = inner_blade_length * 3.5f;
+        float outer_blade_thickness = inner_blade_thickness * 3.5f, outer_blade_length = inner_blade_length * 3.5f;
+
+        if (isBladeFineCut) {
+            tip_length = 1f;
+            inner_blade_thickness = .2f;
+            inner_blade_length = .75f;
+            outer_blade_thickness = inner_blade_thickness * 1.5f;
+            outer_blade_length = inner_blade_length * 1.5f;
+        }
+        float bladeHeight = completeBladeLength - tip_length;
 
         //Outer Blade
         //TODO: find out what blur is in renderType. Maybe I have to create my own renderType?
@@ -134,11 +144,12 @@ public class BladeRenderLayer extends GeoRenderLayer<SwordItem>{
 
         VertexConsumer innerBuffer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/misc/lightsaber_blade.png"), false));
         // Bottom square
+        /*
         innerBuffer.addVertex(matrix, -inner_blade_thickness, -0.5f, -inner_blade_length).setColor(innerColor).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, inner_blade_thickness, -0.5f, -inner_blade_length).setColor(innerColor).setUv(u + 1.0f, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, inner_blade_thickness, -0.5f, inner_blade_length).setColor(innerColor).setUv(u + 1.0f, v + 1.0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, -inner_blade_thickness, -0.5f, inner_blade_length).setColor(innerColor).setUv(u, v + 1.0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
-
+        */
         // Front face
         innerBuffer.addVertex(matrix, -inner_blade_thickness, bladeHeight, inner_blade_length).setColor(innerColor).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, inner_blade_thickness, bladeHeight, inner_blade_length).setColor(innerColor).setUv(u + 1.0f, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
@@ -156,13 +167,13 @@ public class BladeRenderLayer extends GeoRenderLayer<SwordItem>{
         innerBuffer.addVertex(matrix, -inner_blade_thickness, bladeHeight, inner_blade_length).setColor(innerColor).setUv(u + 1.0f, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, -inner_blade_thickness, -0.5f, inner_blade_length).setColor(innerColor).setUv(u + 1.0f, v + 1.0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, -inner_blade_thickness, -0.5f, -inner_blade_length).setColor(innerColor).setUv(u, v + 1.0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
-/*
+
         // Right face
         innerBuffer.addVertex(matrix, inner_blade_thickness, bladeHeight, inner_blade_length).setColor(innerColor).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, inner_blade_thickness, bladeHeight, -inner_blade_length).setColor(innerColor).setUv(u + 1.0f, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, inner_blade_thickness, -0.5f, -inner_blade_length).setColor(innerColor).setUv(u + 1.0f, v + 1.0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, inner_blade_thickness, -0.5f, inner_blade_length).setColor(innerColor).setUv(u, v + 1.0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
-
+/*
         // Top face
         innerBuffer.addVertex(matrix, -inner_blade_thickness, bladeHeight, inner_blade_length).setColor(innerColor).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
         innerBuffer.addVertex(matrix, inner_blade_thickness, bladeHeight, inner_blade_length).setColor(innerColor).setUv(u + 1.0f, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(maxLight).setNormal(1f, 1f, 1f);
@@ -195,5 +206,35 @@ public class BladeRenderLayer extends GeoRenderLayer<SwordItem>{
     }
     public void setBlades(BladesPart blades) {
         this.blades = blades;
+    }
+
+    public Vector3f getEmitterLocation() {
+        return emitterLocation;
+    }
+    public void setEmitterLocation(Vector3f emitterLocation) {
+        this.emitterLocation.set(emitterLocation);
+    }
+
+    public List<GeoBone> getBones() {
+        return bones;
+    }
+    public void setBones(List<GeoBone> bones) {
+        this.bones = bones;
+    }
+    public void pushBones(List<GeoBone> bones){
+        this.bones.addAll(bones);
+    }
+    public void pushBones(GeoBone bone){
+        this.bones.add(bone);
+    }
+    public void pushBonesChecked(List<GeoBone> bones){
+        if (!new HashSet<>(this.bones).containsAll(bones)) pushBones(bones);
+    }
+    public void pushBonesChecked(GeoBone bone){
+        if (!this.bones.contains(bone)) pushBones(bone);
+    }
+
+    public void setShouldRender(boolean shouldRender) {
+        this.shouldRender = shouldRender;
     }
 }
