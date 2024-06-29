@@ -27,6 +27,9 @@ public class BladeRenderLayer extends ModelRenderLayer<SwordItem>{
     private boolean isBladeCracked = false;
     private boolean isBladeFineCut = false;
 
+    private int primaryInnerColor = -1;
+    private int primaryOuterColor = -1;
+
     public BladeRenderLayer(SwordRenderer entityRendererIn) {
         super(entityRendererIn);
         this.emitterLocation = new Vector3f();
@@ -42,8 +45,11 @@ public class BladeRenderLayer extends ModelRenderLayer<SwordItem>{
             isBladeFineCut = bladeData.fine_cut();
             isBladeCracked = bladeData.cracked();
 
+            if (primaryInnerColor == -1 && blade_joint.getName().equals("primary")) primaryInnerColor = Util.HexStringToIntARGB(bladeData.innerColor());
+            if (primaryOuterColor == -1 && blade_joint.getName().equals("primary")) primaryOuterColor = Util.HexStringToIntARGB(bladeData.outerColor());
+
             if (bladeData.model().getPath().isBlank() || bladeData.model().getNamespace().isBlank()){
-                Tuple<MultiBufferSource, PoseStack> blade = renderLightsaberBlade(bufferSource, poseStack, blade_joint, bladeData.length() * 2, Util.HexStringToIntARGB(bladeData.outerColor(), 0x66), Util.HexStringToIntARGB(bladeData.innerColor(), 0xff));
+                Tuple<MultiBufferSource, PoseStack> blade = renderLightsaberBlade(bufferSource, poseStack, blade_joint, bladeData.length() * 2, Util.HexStringToIntARGB(bladeData.outerColor(), 0x88), Util.HexStringToIntARGB(bladeData.innerColor(), 0xff));
                 bufferSource = blade.getA();
                 poseStack = blade.getB();
             } else {
@@ -236,5 +242,12 @@ public class BladeRenderLayer extends ModelRenderLayer<SwordItem>{
 
     public void setShouldRender(boolean shouldRender) {
         this.shouldRender = shouldRender;
+    }
+
+    public int getPrimaryInnerColor(){
+        return this.primaryInnerColor;
+    }
+    public int getPrimaryOuterColor(){
+        return this.primaryOuterColor;
     }
 }

@@ -19,4 +19,7 @@ public class Util {
     public static int HexStringToIntARGB(String hexString, int alpha){
         return addAlphaARGB(HexStringToIntRGB(hexString), alpha);
     }
+    public static int HexStringToIntARGB(String hexString){
+        return addAlphaARGB(HexStringToIntRGB(hexString), 0xff);
+    }
 }

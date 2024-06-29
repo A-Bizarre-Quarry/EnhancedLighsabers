@@ -12,10 +12,11 @@ import de.abq.enhanced_lightsabers.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Quaternionf;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -150,20 +151,22 @@ public class SwordRenderer extends GeoItemRenderer<SwordItem> {
                     this.pommelRenderLayer.setParentScale(gripData.scale());
                     this.pommelRenderLayer.setRetry(true);
                 }
+                try {
+                    renderType = RenderType.entityTranslucent(gripData.model());
+                } catch (Exception e){}
 
                 this.reRender(this.gripModel, poseStack, bufferSource, animatable, renderType, bufferSource.getBuffer(renderType), partialTick, packedLight, packedOverlay, this.getRenderColor(animatable, partialTick, packedLight).argbInt());
             }
         }
         this.bladeRenderLayer.setShouldRender(renderPerspective != ItemDisplayContext.GUI);
         if (renderPerspective == ItemDisplayContext.GUI){
-            //TODO: add Triangle to indicate outer and inner blade color
-            bufferSource.getBuffer(renderType).addVertex(0,0,0).setLight(0xF00B0).setColor(0xff000000/*this.bladeRenderLayer.getPrimerColor()*/).setOverlay(packedOverlay).setNormal(1,1,1);
-            bufferSource.getBuffer(renderType).addVertex(0,1.5f,0).setLight(0xF00B0).setColor(0xff000000/*this.bladeRenderLayer.getPrimerColor()*/).setOverlay(packedOverlay).setNormal(1,1,1);
-            bufferSource.getBuffer(renderType).addVertex(0,1.5f,0).setLight(0xF00B0).setColor(0xff000000/*this.bladeRenderLayer.getPrimerColor()*/).setOverlay(packedOverlay).setNormal(1,1,1);
 
-            bufferSource.getBuffer(renderType).addVertex(0.5f,0,0).setLight(0xF00B0).setColor(0xff0000ff/*this.bladeRenderLayer.getSecondaryColor()*/).setOverlay(packedOverlay).setNormal(1,1,1);
-            bufferSource.getBuffer(renderType).addVertex(0,1,0).setLight(0xF00B0).setColor(0xff0000ff/*this.bladeRenderLayer.getSecondaryColor()*/).setOverlay(packedOverlay).setNormal(1,1,1);
-            bufferSource.getBuffer(renderType).addVertex(0,1,0).setLight(0xF00B0).setColor(0xff0000ff/*this.bladeRenderLayer.getSecondaryColor()*/).setOverlay(packedOverlay).setNormal(1,1,1);
+            bufferSource.getBuffer(renderType).addVertex(-1,-1,-1).setLight(0xF000F0).setColor(this.bladeRenderLayer.getPrimaryOuterColor()).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(1,1,1).setUv(0,0);
+            bufferSource.getBuffer(renderType).addVertex(0f,0f,0).setLight(0xF000F0).setColor(this.bladeRenderLayer.getPrimaryOuterColor()).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(1,1,1).setUv(0,0);
+            bufferSource.getBuffer(renderType).addVertex(1f,1f,1).setLight(0xF000F0).setColor(this.bladeRenderLayer.getPrimaryOuterColor()).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(1,1,1).setUv(0,0);
+            //bufferSource.getBuffer(renderType).addVertex(matrix, 0.5f,0,0).setLight(0xF000F0).setColor(this.bladeRenderLayer.getPrimaryInnerColor()).setOverlay(packedOverlay).setNormal(1,1,1).setUv(0,0);
+            //bufferSource.getBuffer(renderType).addVertex(matrix, 0,1,0).setLight(0xF000F0).setColor(this.bladeRenderLayer.getPrimaryInnerColor()).setOverlay(packedOverlay).setNormal(1,1,1).setUv(0,0);
+            //bufferSource.getBuffer(renderType).addVertex(matrix, 1,1,0).setLight(0xF000F0).setColor(this.bladeRenderLayer.getPrimaryInnerColor()).setOverlay(packedOverlay).setNormal(1,1,1).setUv(0,0);
         }
         super.renderByItem(stack, transformType, poseStack, bufferSource, packedLight, packedOverlay);
         this.isFixed = transformType == ItemDisplayContext.FIXED;
