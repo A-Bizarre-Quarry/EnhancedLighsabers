@@ -1,5 +1,8 @@
 package de.abq.laser_saber.util;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import java.util.Optional;
 
 public class Util {
     public static final ResourceLocation EMPTY_RESOURCE_LOCATION = ResourceLocation.fromNamespaceAndPath("", "");

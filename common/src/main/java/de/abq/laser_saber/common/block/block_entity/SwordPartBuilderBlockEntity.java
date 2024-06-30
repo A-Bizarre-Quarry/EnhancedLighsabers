@@ -1,13 +1,12 @@
-package de.abq.laser_saber.common.block;
+package de.abq.laser_saber.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SwordPartBuilderBlockEntity extends BlockEntity {
+public class SwordPartBuilderBlockEntity extends AbstractGeoBlockEntity {
     public SwordPartBuilderBlockEntity( BlockPos $$1, BlockState $$2) {
         super(BlockEntityType.CRAFTER, $$1, $$2);
     }

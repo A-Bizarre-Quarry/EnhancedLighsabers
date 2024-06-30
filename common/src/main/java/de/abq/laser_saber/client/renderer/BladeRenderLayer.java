@@ -22,7 +22,7 @@ public class BladeRenderLayer extends ModelRenderLayer<SwordItem>{
     private BladesPart blades = null;
     private List<GeoBone> bones = new ArrayList<>();
     private Vector3f emitterLocation;
-    private boolean shouldRender;
+    private boolean shouldRender = true;
 
     private boolean isBladeCracked = false;
     private boolean isBladeFineCut = false;
@@ -37,8 +37,8 @@ public class BladeRenderLayer extends ModelRenderLayer<SwordItem>{
 
     @Override
     public void renderForBone(PoseStack poseStack, SwordItem animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        if (!shouldRender) return;
-        for (GeoBone blade_joint : this.bones ){
+        if (shouldRender && blades != null)
+         for (GeoBone blade_joint : this.bones ){
             Optional<BladesPart.Blade> bladeDataOpt = blades.getByString(blade_joint.getName());
             if (bladeDataOpt.isEmpty()) continue;
             BladesPart.Blade bladeData = bladeDataOpt.get();
@@ -63,14 +63,19 @@ public class BladeRenderLayer extends ModelRenderLayer<SwordItem>{
 
     private Tuple<MultiBufferSource, PoseStack> renderLightsaberBlade(MultiBufferSource bufferSource, PoseStack poseStack, GeoBone blade_joint, float completeBladeLength, int outerColor, int innerColor){
         poseStack.pushPose();
-
-        poseStack.scale(0.05f, 0.05f, 0.05f);  // Scale down
-        poseStack.rotateAround(new Quaternionf().rotationXYZ(-blade_joint.getRotX(), -blade_joint.getRotY(), -blade_joint.getRotZ()), blade_joint.getPivotX(), blade_joint.getPivotY(), blade_joint.getPivotZ());
         poseStack.translate(
-                this.emitterLocation.x+(blade_joint.getPivotX()),
-                this.emitterLocation.y+(blade_joint.getPivotY()),
-                this.emitterLocation.z+(blade_joint.getPivotZ())
+                (this.emitterLocation.x+blade_joint.getPivotX())/(16+this.parentScale*0.8f),
+                (this.emitterLocation.y+blade_joint.getPivotY())/(16+this.parentScale*0.8f),
+                (this.emitterLocation.z+blade_joint.getPivotZ())/(16+this.parentScale*0.8f)
         );
+
+        poseStack.mulPose(new Quaternionf().rotationXYZ(
+                blade_joint.getRotX(),
+                blade_joint.getRotY(),
+                blade_joint.getRotZ()));
+
+        poseStack.scale(0.0625f, 0.0625f, 0.0625f);
+
         Matrix4f matrix = poseStack.last().pose();
 
         int maxLight = 0xF000F0;
@@ -205,6 +210,12 @@ public class BladeRenderLayer extends ModelRenderLayer<SwordItem>{
 
         poseStack.popPose();
         return new Tuple<>(bufferSource, poseStack);
+    }
+
+    private float calcScaleOffset(float scale){
+        if (scale == 1) return 1;
+        if (scale == 0) return 0;
+        return 1-1f;
     }
 
     public BladesPart getBlades() {
