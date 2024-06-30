@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-          "de.abq.enhanced_lightsabers.ExampleMod"
+            "de.abq.laser_saber.LaserSaberFabric"
         ]
     },
     "mixins": [
