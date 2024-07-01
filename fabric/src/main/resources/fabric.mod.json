@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "de.abq.laser_saber.LaserSaberFabric"
+            "de.abq.partium.PartiumFabric"
         ]
     },
     "mixins": [
