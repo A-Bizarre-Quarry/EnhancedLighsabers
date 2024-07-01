@@ -1,13 +1,19 @@
 package de.abq.laser_saber;
 
+import de.abq.laser_saber.addon_system.ParseDataPacks;
 import de.abq.laser_saber.common.data_components.ELDataComponents;
 import de.abq.laser_saber.common.item.LSItems;
+import de.abq.laser_saber.event.ServerStartEvent;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -16,18 +22,6 @@ import java.util.function.Consumer;
 
 @Mod(Constants.MOD_ID)
 public class LaserSaberNF {
-
-    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, Constants.MOD_ID);
-    /*public static final DeferredHolder<DataComponentType<?>, DataComponentType<ExampleRecord>> BASIC_EXAMPLE = DATA_COMPONENTS.register("basic",
-            () -> DataComponentType.builder()
-                    // The codec to read/write the data to disk
-                    .persistent(BASIC_CODEC)
-                    // The codec to read/write the data across the network
-                    .networkSynchronized(BASIC_STREAM_CODEC)
-                    .build()
-    );*/
-
-
     public LaserSaberNF(IEventBus eventBus) {
 
         // This method is invoked by the NeoForge mod loader when it is ready
@@ -35,13 +29,14 @@ public class LaserSaberNF {
         // project.
 
         // Use NeoForge to bootstrap the Common mod.
-        Constants.LOG.info("Hello NeoForge world!");
-
+        LaserSaber.init();
 
         eventBus.addListener((RegisterEvent event) -> {
             bindDataComponents(event, ELDataComponents::register);
             bindItems(event, LSItems::registerItems );
         });
+
+        NeoForge.EVENT_BUS.register(new ServerStartEvent());
     }
     private void bindItems(RegisterEvent event, Consumer<BiConsumer<Item, ResourceLocation>> source){
         if (event.getRegistryKey().equals(Registries.ITEM)){

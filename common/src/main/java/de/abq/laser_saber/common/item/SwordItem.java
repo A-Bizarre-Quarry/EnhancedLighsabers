@@ -6,8 +6,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -19,14 +19,12 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Consumer;
 
-public class SwordItem extends Item implements GeoItem {
+public class SwordItem extends net.minecraft.world.item.SwordItem implements GeoItem {
     private static final RawAnimation ACTIVATE_ANIM = RawAnimation.begin().thenPlay("use.activate");
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public float bladeLength;
-
     public SwordItem(Properties properties) {
-        super(properties);
+        super(Tiers.NETHERITE, properties);
         // Register our item as server-side handled.
         // This enables both animation data syncing and server-side animation triggering
         SingletonGeoAnimatable.registerSyncedAnimatable(this);

@@ -11,7 +11,7 @@ import net.minecraft.world.item.Rarity;
 import java.util.function.BiConsumer;
 
 public class LSItems {
-    public static final Item SWORD = new SwordItem(Services.PLATFORM.defaultItemBuilder().rarity(Rarity.EPIC).component(ELDataComponents.SWORD_PARTS, PartsComponents.DEFAULT));
+    public static final Item SWORD = new SwordItem(Services.PLATFORM.defaultItemBuilder().rarity(Rarity.EPIC).stacksTo(1).component(ELDataComponents.SWORD_PARTS, PartsComponents.DEFAULT));
 
     public static void registerItems(BiConsumer<Item, ResourceLocation> register) {
         register.accept(SWORD, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "sword"));
