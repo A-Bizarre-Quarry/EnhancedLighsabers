@@ -2,14 +2,12 @@ package de.abq.partium;
 
 import de.abq.partium.common.data_components.ELDataComponents;
 import de.abq.partium.common.item.ZItems;
-import de.abq.partium.event.ServerStartEvent;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.util.function.BiConsumer;
@@ -30,8 +28,6 @@ public class PartiumNF {
             bindDataComponents(event, ELDataComponents::register);
             bindItems(event, ZItems::registerItems );
         });
-
-        NeoForge.EVENT_BUS.register(new ServerStartEvent());
     }
     private void bindItems(RegisterEvent event, Consumer<BiConsumer<Item, ResourceLocation>> source){
         if (event.getRegistryKey().equals(Registries.ITEM)){

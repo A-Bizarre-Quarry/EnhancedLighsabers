@@ -19,11 +19,14 @@ public class ParseDataPacks {
     }
 
     public static void printDatapacks(MinecraftServer server) {
-
         server.getResourceManager().listPacks().forEach(packResources -> {
-            if (packResources.getNamespaces(PackType.SERVER_DATA).contains(Partium.MOD_ID)){
+
+            System.out.println(packResources.getNamespaces(PackType.CLIENT_RESOURCES));
+            if (packResources.getNamespaces(PackType.CLIENT_RESOURCES).contains(Partium.MOD_ID)){
                 try {
-                    InputStream inputStream = packResources.getResource(PackType.SERVER_DATA, ResourceLocation.fromNamespaceAndPath(Partium.MOD_ID, "parts")).get();
+                    //TODO: just use a resource pack and find out if the server can read resource packs, if not just put the rp somewhere and parse it my self.
+                    //      would be cool if i could add a partium_addon to the resource pack location. I could parse the rest myself
+                    InputStream inputStream = packResources.getResource(PackType.CLIENT_RESOURCES, ResourceLocation.fromNamespaceAndPath(Partium.MOD_ID, "parts")).get();
                     int size = inputStream.available();
                     byte[] buffer = new byte[size];
                     inputStream.read(buffer);
@@ -31,11 +34,11 @@ public class ParseDataPacks {
                     String json = new String(buffer, "UTF-8");
                     JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
                     JsonElement packsObject = jsonObject.get("packs");
+                    System.out.println(packsObject);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Partium.LOG.error(e.getMessage());
                 }
             }
-
         });
     }
 }
