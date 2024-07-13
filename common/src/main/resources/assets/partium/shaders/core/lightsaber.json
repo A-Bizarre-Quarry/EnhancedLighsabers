@@ -1,0 +1,9 @@
+{
+  "vertex": "partium:lightsaber",
+  "fragment": "partium:lightsaber",
+  "samplers": [
+    { "name": "DiffuseSampler" }
+  ],
+  "uniforms": [
+  ]
+}

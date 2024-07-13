@@ -7,6 +7,10 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modImplementation("foundry.veil:Veil-fabric-1.20.4:1.0.0.43") {
+        exclude group: "maven.modrinth"
+    }
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
 }
 
 loom {
@@ -29,6 +33,19 @@ loom {
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
             runDir("runs/server")
+        }
+    }
+}
+repositories {
+    maven {
+        name = 'BlameJared Maven (CrT / Bookshelf)'
+        url = 'https://maven.blamejared.com'
+    }
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroup("software.bernie.geckolib")
         }
     }
 }

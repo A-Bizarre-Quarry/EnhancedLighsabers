@@ -2,9 +2,15 @@ package de.abq.partium.platform;
 
 import de.abq.partium.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class FabricPlatformHelper implements IPlatformHelper {
@@ -32,17 +38,17 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public Item.Properties defaultItemBuilder() {
-        return null;
-    }
-
-    @Override
     public Item.Properties defaultItemBuilderWithCustomDamageOnFabric() {
         return IPlatformHelper.super.defaultItemBuilderWithCustomDamageOnFabric();
     }
 
     @Override
-    public <T extends DataComponentType<?>> T registerDataComponent(String name, Supplier<T> sup){
-        return null;
+    public Item.Properties defaultItemBuilder() {
+        return new Item.Properties();
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(BiFunction<BlockPos, BlockState, T> fn, Block... blocks) {
+        return BlockEntityType.Builder.of(fn::apply, blocks).build(null);
     }
 }

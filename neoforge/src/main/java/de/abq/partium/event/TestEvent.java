@@ -20,9 +20,9 @@ public class TestEvent {
     }*/
     @SubscribeEvent
     public static void onLivingJump(LivingEvent.LivingJumpEvent event) {
-        Entity entity = event.getEntity();
+        /*Entity entity = event.getEntity();
         if (!entity.level().isClientSide() && entity instanceof LivingEntity living) {
             ParseDataPacks.printDatapacks(living.getServer());
-        }
+        }*/
     }
 }

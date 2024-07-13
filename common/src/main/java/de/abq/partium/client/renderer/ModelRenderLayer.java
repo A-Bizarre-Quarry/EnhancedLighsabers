@@ -18,6 +18,7 @@ import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 import software.bernie.geckolib.util.Color;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class ModelRenderLayer<T extends GeoAnimatable> extends AutoGlowingGeoLayer<T> {
     private ResourceLocation model;
@@ -47,8 +48,10 @@ public class ModelRenderLayer<T extends GeoAnimatable> extends AutoGlowingGeoLay
         if (retryWholeDraw && bone.getName().equals("joint_"+joint_name) && model != Util.EMPTY_RESOURCE_LOCATION && !Objects.equals(model, ResourceLocation.fromNamespaceAndPath("minecraft", ""))) {
             DynamicItemModel<T> dynModel = new DynamicItemModel<>(model);
             if (CheckedResourceLocation.exists(dynModel.getModelResource(animatable))){
-                    BakedGeoModel bakedGeoModel = dynModel.getBakedModel(dynModel.getModelResource(animatable));
-                GeoBone additionalBone = bakedGeoModel.getBone(joint_name).get();
+                BakedGeoModel bakedGeoModel = dynModel.getBakedModel(dynModel.getModelResource(animatable));
+                Optional<GeoBone> additionalBoneOpt = bakedGeoModel.getBone(joint_name);
+                if (additionalBoneOpt.isEmpty()) return;
+                GeoBone additionalBone = additionalBoneOpt.get();
                 poseStack.pushPose();
 
                 Vector3f translate = new Vector3f(

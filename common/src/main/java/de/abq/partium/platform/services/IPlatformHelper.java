@@ -1,12 +1,18 @@
 package de.abq.partium.platform.services;
 
+import com.mojang.blaze3d.shaders.Program;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.io.IOException;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 public interface IPlatformHelper {
@@ -39,7 +45,6 @@ public interface IPlatformHelper {
      * @return The name of the environment type.
      */
     default String getEnvironmentName() {
-
         return isDevelopmentEnvironment() ? "development" : "production";
     }
 
@@ -50,4 +55,6 @@ public interface IPlatformHelper {
 
     <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(BiFunction<BlockPos, BlockState, T> fn, Block... blocks);
 
+
+    Optional<ShaderInstance> loaderShaderInstance(ResourceLocation rl, VertexFormat vertexFormat);
 }
