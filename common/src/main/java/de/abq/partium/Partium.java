@@ -1,7 +1,7 @@
 package de.abq.partium;
 
 import de.abq.partium.addon_system.ParseDataPacks;
-import de.abq.partium.platform.Services;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,11 +18,10 @@ public class Partium {
     // write the majority of your code here and load it from your loader specific projects. This example has some
     // code that gets invoked by the entry point of the loader specific projects.
     public static void init() {
-
         ParseDataPacks.scatch();
+    }
 
-        if (Services.PLATFORM.isModLoaded(Partium.MOD_ID)) {
-            Partium.LOG.info("Hello to examplemod");
-        }
+    public static ResourceLocation path(String id) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
     }
 }

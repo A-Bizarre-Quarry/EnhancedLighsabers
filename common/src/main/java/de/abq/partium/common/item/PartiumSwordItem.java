@@ -16,6 +16,8 @@ import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -49,8 +51,8 @@ public class PartiumSwordItem extends PickaxeItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        /*controllers.add(new AnimationController<>(this, "Activation", 0, state -> PlayState.STOP)
-                .triggerableAnim("activate", ACTIVATE_ANIM));*/
+        controllers.add(new AnimationController<>(this, "Activation", 0, state -> PlayState.STOP)
+                .triggerableAnim("activate", ACTIVATE_ANIM));
         // We've marked the "activate" animation as being triggerable from the server
     }
 
@@ -58,7 +60,7 @@ public class PartiumSwordItem extends PickaxeItem implements GeoItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (level instanceof ServerLevel serverLevel)
-            triggerAnim(player, GeoItem.getOrAssignId(player.getItemInHand(hand), serverLevel), "Activation", "activate");
+            triggerAnim(player, GeoItem.getOrAssignId(player.getItemInHand(hand), serverLevel), "Activation", "use.activate");
 
         return super.use(level, player, hand);
     }

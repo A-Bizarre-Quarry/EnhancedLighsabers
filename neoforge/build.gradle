@@ -41,9 +41,16 @@ repositories {
             includeGroup("software.bernie.geckolib")
         }
     }
+    maven {
+        name = 'BlameJared Maven (CrT / Bookshelf)'
+        url = 'https://maven.blamejared.com'
+    }
 }
 
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    implementation("foundry.veil:veil-neoforge-${veil_minecraft}:${veil}") {
+        exclude group: "maven.modrinth"
+    }
 }

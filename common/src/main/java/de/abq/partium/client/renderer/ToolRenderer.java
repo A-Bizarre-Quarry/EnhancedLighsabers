@@ -23,12 +23,12 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
-
+//TODO: Only works for sword item
 public class ToolRenderer extends GeoItemRenderer<PartiumSwordItem> {
-    private BladeRenderLayer bladeRenderLayer = new BladeRenderLayer(this);
-    private ModelRenderLayer<PartiumSwordItem> emitterRenderLayer = new ModelRenderLayer<>(this, "emitter");
-    private ModelRenderLayer<PartiumSwordItem> pommelRenderLayer = new ModelRenderLayer<>(this, "pommel");
-    private ModelRenderLayer<PartiumSwordItem> guardRenderLayer = new ModelRenderLayer<>(this, "guard");
+    private final BladeRenderLayer bladeRenderLayer = new BladeRenderLayer(this);
+    private final ModelRenderLayer<PartiumSwordItem> emitterRenderLayer = new ModelRenderLayer<>(this, "emitter");
+    private final ModelRenderLayer<PartiumSwordItem> pommelRenderLayer = new ModelRenderLayer<>(this, "pommel");
+    private final ModelRenderLayer<PartiumSwordItem> guardRenderLayer = new ModelRenderLayer<>(this, "guard");
 
     private BakedGeoModel gripModel = null;
     private boolean gripChange = true;
@@ -37,7 +37,7 @@ public class ToolRenderer extends GeoItemRenderer<PartiumSwordItem> {
     private boolean isFixed = false;
 
     public ToolRenderer() {
-        super(new DefaultedItemGeoModel<>(ResourceLocation.fromNamespaceAndPath(Partium.MOD_ID, "base")));
+        super(new DefaultedItemGeoModel<>(Partium.path("base")));
         addRenderLayer(emitterRenderLayer);
         addRenderLayer(guardRenderLayer);
         addRenderLayer(pommelRenderLayer);
